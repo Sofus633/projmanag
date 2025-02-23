@@ -1,5 +1,6 @@
-from datt import start_session, get_proj_name
+from datt import get_proj_name, monitor
 from display import display_proj
+
 import time
 def select_proj():
     cursorpos = 0
@@ -7,25 +8,12 @@ def select_proj():
     return display_proj(cursorpos, proj_name) 
 
 
-actions = {
-        "startsession" : start_session
-
-}
+actions = {}
 
 print("welcome silly lil mushroom")
 def main():
-
-    
     while True:
-        option = select_proj()
-        print(option)
-        if option != None:
-            print(option)
-        else:
-            break
-        
-        
-
-
+        select_proj()
+        break
 
 main()
