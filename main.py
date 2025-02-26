@@ -5,15 +5,17 @@ import time
 def select_proj():
     cursorpos = 0
     proj_name = get_proj_name()
-    return display_proj(cursorpos, proj_name) 
+    return display_proj(cursorpos,  proj_name) 
 
 
 actions = {}
 
-print("welcome silly lil mushroom")
 def main():
     while True:
         select_proj()
         break
 
 main()
+
+
+

@@ -12,7 +12,9 @@ def display_proj(cursor, proj_name):
     options.append("Exit")
     selected = 0
     stdscr.timeout(1000)
-    count = 0
+    rows, cols = stdscr.getmaxyx()
+    pos  = 0
+
     while True:
         stdscr.clear()
 
@@ -20,41 +22,38 @@ def display_proj(cursor, proj_name):
         for i, option in enumerate(options):
             style = curses.A_REVERSE if i == selected else curses.A_NORMAL
             try:
-                stdscr.addstr(i, 2, option, style)
+                stdscr.addstr(i-pos, 2, option, style)
             except curses.error:
                 pass
 
-        stdscr.refresh()
 
         key = stdscr.getch()
-        try:
-                    stdscr.addstr(i, 2, 'refreshing' + str(count))
-        except curses.error:
-            pass
-        count += 1
         stdscr.refresh()
         # Handle key presses
         if key == 122 and selected > 0:
             selected -= 1
+            if selected == pos - 1:
+                pos -= 1
         elif key == 115 and selected < len(options) - 1:
             selected += 1
-            
-        elif key in [10, 13]:  # Enter key
-            stdscr.addstr(len(options) + 2, 2, f"Selected: {options[selected]}")
+            if selected > rows - 1:
+                pos += 1
+        elif key in [10, 13, 100]:  # Enter key
+            stdscr.addstr(rows-1, 2, f"Selected: {options[selected]}")
             stdscr.refresh()
             
             if options[selected] == "Exit":
                 curses.endwin()
                 break
 
-            second_selection(option[selected], stdscr, max([len(val) for val in options]))
+            second_selection(options[selected], stdscr, max([len(val) for val in options]), selected)
         
         
             
 
 
 
-def second_selection(project, stdscr, niv): 
+def second_selection(project, stdscr, niv, select): 
     niv += 5
     selected = 0
     
@@ -64,7 +63,7 @@ def second_selection(project, stdscr, niv):
         
         for i, option in enumerate(options):
             style = curses.A_REVERSE if i == selected else curses.A_NORMAL
-            stdscr.addstr(i, niv, option, style)
+            stdscr.addstr(i + select, niv, option, style)
             
         key = stdscr.getch()
         stdscr.refresh()
@@ -76,9 +75,11 @@ def second_selection(project, stdscr, niv):
         elif key == 113 and selected < len(options) - 1:
             break
         elif key in [10, 13]:
-            match option[selected]:
+            match options[selected]:
                 case "Start Monitoring":
+                    curses.endwin()
                     monitor(project)
+                    curses.doupdate()
                     break
                 case "Stats":
                     pass

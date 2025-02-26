@@ -4,18 +4,19 @@ import time
 import random
 from lorem import gen_lorem
 class Project:
-    def __init__(self, name="unamed" ,subject="no subject" ,description="No description", time=0, files=None, id=None,):
+    def __init__(self, id=None,name="unamed" ,subject="no subject" ,description="No description", time=0, files=None):
         self.name = name
         self.subject = subject
+        self.arguments = 
         self.description = description
-        self.time = time 
+        self.time = int(time)
         self.files = files
         self.id = id
     def __str__(self):
         return f"{self.name}, {self.time}, {self.subject} : {self.description}" 
 
 def load_proj(proj):
-    return Project(*get_proj(f"SELECT * FROM projects WHERE name == '{proj}'"))
+    return Project(*get_proj(f"SELECT * FROM projects WHERE name == '{proj}'")[0])
 
 def monitor(proj):
     print(f"start monitoring {proj}")
@@ -30,7 +31,7 @@ def monitor(proj):
         stdscr.clear()
 
         stdscr.addstr(0, 2, f"{proj} Current Stats :")
-        stdscr.addstr(1, 2, f"{stat.name} : {stat.time}")
+        stdscr.addstr(1, 2, f"time : {stat.time}")
         stdscr.refresh()
         t = time.time()
         key = stdscr.getch()
@@ -41,6 +42,7 @@ def monitor(proj):
             break
         stat.time += 1
         time.sleep(waittime)
+    save_proj(stat)
 
 
 def get_proj(request):     
@@ -54,7 +56,7 @@ def create_proj(proj):
     get_proj(f'INSERT INTO projects (name, subject, description, files) VALUES ("{proj.name}", "{proj.subject}", "{proj.description}", "{proj.files if proj.files != None else 'NULL'}") ')
 
 def save_proj(proj):
-    get_proj(f"UPDATE projects SET name={proj.name}, subject={proj.subject}, description={proj.description}, files={proj.files if proj.files != None else 'NULL'} WHERE id = {proj.id}  ")
+    get_proj(f"UPDATE projects SET name = '{proj.name}', subject = '{proj.subject}', description = '{proj.description}', time = '{proj.time}',files = 'NULL' WHERE id = '{proj.id}'  ")
 
 def get_proj_name():
     return [row[0] for row in get_proj("SELECT name FROM projects")]
@@ -64,6 +66,4 @@ def lorem(len):
 
 
 if __name__ == "__main__":
-    for i in range(20):
-        create_proj(Project("Project" + str(i), "About " + str(i), gen_lorem(random.randint(5, 10))))
-     
+    pass

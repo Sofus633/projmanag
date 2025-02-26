@@ -24,4 +24,4 @@ def gen_lorem(lenn):
     return " ".join([lorem_words[random.randint(0, len(lorem_words)-1)] for i in range(lenn)])
 
 if __name__ == '__main__':
-    print(gen_lorem(5))
+    print(gen_lorem(500))
