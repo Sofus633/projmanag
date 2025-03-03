@@ -11,9 +11,9 @@ def select_proj():
 actions = {}
 
 def main():
-    while True:
-        select_proj()
-        break
+    
+   select_proj()
+   
 
 main()
 
